@@ -3,6 +3,8 @@ module Api
     class AirlinesController < ApplicationController
       protect_from_forgery with: :null_session
 
+      before_action :set_airline, only: %i[show update destroy]
+
       def index
         airlines = Airline.all
 
@@ -10,9 +12,7 @@ module Api
       end
 
       def show
-        airline = Airline.find_by(slug: params[:slug])
-
-        render json: AirlineSerializer.new(airline, options).serializable_hash.to_json
+        render json: AirlineSerializer.new(@airline, options).serializable_hash.to_json
       end
 
       def create
@@ -26,27 +26,27 @@ module Api
       end
 
       def update
-        airline = Airline.find_by(slug: params[:slug])
-
-        if airline.update(airline_params)
-          render json: AirlineSerializer.new(airline, options).serializable_hash.to_json
+        if @airline.update(airline_params)
+          render json: AirlineSerializer.new(@airline, options).serializable_hash.to_json
         else
-          render json: { error: airline.errors.message }, status: 422
+          render json: { error: @airline.errors.message }, status: 422
         end
       end
 
       def destroy
-        airline = Airline.find_by(slug: params[:slug])
-
-        if airline.destroy
+        if @airline.destroy
           head :no_content
         else
-          render json: { error: airline.errors.message }, status: 422
+          render json: { error: @airline.errors.message }, status: 422
         end
       end
 
       private
 
+      def set_airline
+        @airline = Airline.find_by(slug: params[:slug])
+      end
+      
       def airline_params
         params.require(:airline).permit(:name, :image_url)
       end

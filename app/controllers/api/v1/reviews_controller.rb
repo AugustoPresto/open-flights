@@ -3,6 +3,8 @@ module Api
     class ReviewsController < ApplicationController
       protect_from_forgery with: :null_session
 
+      before_action :set_review, only: %i[destroy]
+
       def create
         review = Review.new(review_params)
 
@@ -14,16 +16,18 @@ module Api
       end
 
       def destroy
-        review = Review.find(params[:id])
-
-        if review.destroy
+        if @review.destroy
           head :no_content
         else
-          render json: { error: review.errors.full_messages }, status: 422
+          render json: { error: @review.errors.full_messages }, status: 422
         end
       end
 
       private
+
+      def set_review
+        @review = Review.find(params[:id])
+      end
 
       def review_params
         params.require(:review).permit(:title, :description, :score, :airline_id)
