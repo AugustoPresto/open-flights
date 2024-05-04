@@ -1,5 +1,41 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import axios from 'axios';
+import Airline from './Airline';
+import styled from 'styled-components';
+
+const Home = styled.div`
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px;
+`
+
+const Header = styled.div`
+  padding: 100px 100px 10px 100px;
+
+  h1 {
+    font-size: 42px;
+  }
+`
+
+const Subheader = styled.div`
+  font-weight: 300;
+  font-size: 26px;
+`
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 20px;
+  width: 100%;
+  padding: 20px;
+
+  > div {
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 20px;
+  }
+`
 
 const Airlines = () => {
   const [airlines, setAirlines] = useState([]);
@@ -13,23 +49,26 @@ const Airlines = () => {
     }, [airlines.length]
   ) 
 
-  const list = airlines.map(item => {
+  const grid = airlines.map(item => {
     return (
-      <li key={item.attributes.name}>{item.attributes.name}</li>
+      <Airline
+        key={item.attributes.name}
+        attributes={item.attributes}
+      />
     )
   })
 
   return (
     <Fragment>
-      <div className="home">
-        <div className="header">
+      <Home>
+        <Header>
           <h1>OpenFlights</h1>
-          <div className="subheader">Honest, unbiased airline reviews.</div>
-        </div>
-        <div className="grid">
-          <ul>{list}</ul>
-        </div>
-      </div>
+          <Subheader>Honest, unbiased airline reviews.</Subheader>
+        </Header>
+        <Grid>
+          {grid}
+        </Grid>
+      </Home>
     </Fragment>
   );
 }
