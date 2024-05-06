@@ -6,7 +6,7 @@ module Api
       before_action :set_review, only: %i[destroy]
 
       def create
-        review = Review.new(review_params)
+        review = airline.reviews.new(review_params)
 
         if review.save
           render json: ReviewSerializer.new(review).serializable_hash.to_json
@@ -24,6 +24,11 @@ module Api
       end
 
       private
+
+      def airline
+        @airline ||= Airline.find(params[:airline_id])
+      end
+      
 
       def set_review
         @review = Review.find(params[:id])
