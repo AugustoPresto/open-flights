@@ -3,6 +3,7 @@ import {useParams} from 'react-router-dom'
 import axios from 'axios';
 import Header from './Header';
 import ReviewForm from './ReviewForm';
+import Review from './Review';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -78,6 +79,18 @@ const Airline = (props) => {
 
     setReview({...review, score})
   }
+
+  let userReviews
+  if (loaded && airline.included) {
+    userReviews = airline.included.map((item, index) => {
+      return (
+        <Review
+          key={index}
+          attributes={item.attributes}
+        />
+      )
+    })
+  }
   
   return (
     <Wrapper>
@@ -90,7 +103,7 @@ const Airline = (props) => {
                 reviews={reviews}
               />
             <div className="totalReviews">{reviews.length} reviews</div>
-            <div className="reviews"></div>
+            {userReviews}
           </Column>
           <Column>
             <ReviewForm
